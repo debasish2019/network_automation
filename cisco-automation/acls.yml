@@ -1,0 +1,29 @@
+---
+- name: configure acls
+  hosts: asa
+  connection: network_cli
+  gather_facts: yes
+  become: yes
+  become_method: enable
+  tasks:
+    - name: Merge provided configuration with device configuration
+      cisco.asa.asa_acls:
+        config:
+          acls:
+            - name: temp_access
+              acl_type: extended
+              aces:
+              - grant: permit
+                line: 1
+                protocol_options:
+                  tcp: true
+                source:
+                  address: 192.0.2.0
+                  netmask: 255.255.255.0
+                destination:
+                  address: 192.0.3.0
+                  netmask: 255.255.255.0
+                  port_protocol:
+                    eq: www
+                log: default
+

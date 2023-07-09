@@ -1,0 +1,34 @@
+---
+- name: configure acls
+  hosts: asa
+  connection: network_cli
+  gather_facts: no
+  become: yes
+  become_method: enable
+  tasks:
+    - name: Creating Source and Destination Object groups
+      cisco.asa.asa_ogs:
+        config:
+          - object_type: network
+            object_groups:
+              - name: AWS-Servers
+                description: Server Hosted In AWS
+                network_object:
+                  host:
+                    - 10.63.63.2
+                    - 10.63.63.3
+                    - 10.63.63.4
+                  address:
+                    - 172.16.0.0 255.255.255.0
+                    - 198.168.0.0 255.255.255.0
+              - name: Remote-mgmt
+                description: Management Remote
+                network_object:
+                  host:
+                    - 192.0.3.1
+                    - 192.0.3.2
+    - name: Creating access-list
+      cisco.asa.asa_acl:
+        lines:
+        - access-list ACL-OUTSIDE extended permit tcp object-group AWS-Servers object-group Remote-mgmt eq www log
+        - access-list ACL-OUTSIDE extended permit tcp object-group AWS-Servers object-group Remote-mgmt eq https log

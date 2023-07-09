@@ -1,0 +1,17 @@
+---
+- name: configure acls
+  hosts: asa
+  connection: network_cli
+  gather_facts: yes
+  become: yes
+  become_method: enable
+  tasks:
+    - name: get timestamp
+      command: date +%Y%m%d-%H-%M-%S
+      register: timestamp
+    - name: Cisco ASA configuration backup
+      cisco.asa.asa_config:
+        backup: yes
+        backup_options:
+          filename: "running-config-{{ timestamp.stdout }}"
+          dir_path: "/home/automation/cisco-automation/backup/{{ inventory_hostname }}"

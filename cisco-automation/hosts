@@ -1,0 +1,14 @@
+[asa]
+172.15.15.100
+
+[asa:vars]
+ansible_user=devops
+ansible_ssh_pass=devops
+ansible_become=true
+ansible_become_method=ansible.netcommon.enable
+ansible_become_pass=become_password
+ansible_connection=ansible.netcommon.network_cli
+ansible_network_os=cisco.asa.asa
+ansible_python_interpreter=python
+ansible_become_method=enable
+ansible_become_pass=admin
